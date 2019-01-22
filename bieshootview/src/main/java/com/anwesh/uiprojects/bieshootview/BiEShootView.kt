@@ -212,4 +212,12 @@ class BiEShootView(val ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+        fun create(activity : Activity) : BiEShootView {
+            val view : BiEShootView = BiEShootView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
