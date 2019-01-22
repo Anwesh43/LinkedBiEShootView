@@ -189,4 +189,26 @@ class BiEShootView(val ctx : Context) : View(ctx) {
         }
 
     }
+
+    data class Renderer(var view : BiEShootView) {
+
+        private val animator : Animator = Animator(view)
+        private val bes : BiEShoot = BiEShoot(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            bes.draw(canvas, paint)
+            animator.animate {
+                bes.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            bes.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
