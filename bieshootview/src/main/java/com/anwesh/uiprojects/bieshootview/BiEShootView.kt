@@ -20,6 +20,8 @@ val strokeFactor : Int = 90
 val sizeFactor : Float = 2.7f
 val foreColor : Int = Color.parseColor("#4CAF50")
 val backColor : Int = Color.parseColor("#BDBDBD")
+val delay : Long = 25
+val lSizeFactor : Int = 3
 
 fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
@@ -35,7 +37,7 @@ fun Canvas.drawBESNode(i : Int, scale : Float, paint : Paint) {
     val size : Float = gap / sizeFactor
     val sc1 : Float = scale.divideScale(0, 2)
     val sc2 : Float = scale.divideScale(1, 2)
-    val yGap : Float = (2 * size) / lines
+    val yGap : Float = (2 * size) / (lines - 1)
     paint.color = foreColor
     paint.strokeWidth = Math.min(w, h) / strokeFactor
     paint.strokeCap = Paint.Cap.ROUND
@@ -45,12 +47,14 @@ fun Canvas.drawBESNode(i : Int, scale : Float, paint : Paint) {
     drawLine(0f, -size, 0f, size, paint)
     translate(0f, -size)
     for (j in 0..(lines - 1)) {
+        val lSize : Float = size / lSizeFactor
         val sc : Float = sc2.divideScale(j, lines)
+        val y : Float = yGap * j
         for (k in 0..1) {
             val sk : Float = 1f - 2 * k
             save()
-            translate((w/2 + paint.strokeWidth) * sc * sk, yGap * j)
-            drawLine(0f, 0f, size/3 * sk, 0f, paint)
+            translate((w/2 + paint.strokeWidth) * sc * sk, y)
+            drawLine(0f, 0f, lSize * sk, 0f, paint)
             restore()
         }
     }
@@ -101,7 +105,7 @@ class BiEShootView(val ctx : Context) : View(ctx) {
             if (animated) {
                 cb()
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(delay)
                     view.invalidate()
                 } catch(ex : Exception) {
 
